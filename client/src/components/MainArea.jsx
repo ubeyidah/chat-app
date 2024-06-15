@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Input, Button } from "@material-tailwind/react";
+import ChatBuble from "./ChatBuble";
 
 const MainArea = () => {
   const [msg, setMsg] = useState("");
@@ -8,8 +9,9 @@ const MainArea = () => {
     setMsg(e.target.value);
   };
   return (
-    <sectioin className="m-8 relative">
+    <section className="m-8 relative">
       <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"></div>
+      <ChatBuble />
       <div className="fixed bottom-3 right-2 left-[330px]">
         <div className="relative flex  w-full ">
           <Input
@@ -43,7 +45,7 @@ const MainArea = () => {
           </Button>
         </div>
       </div>
-    </sectioin>
+    </section>
   );
 };
 
