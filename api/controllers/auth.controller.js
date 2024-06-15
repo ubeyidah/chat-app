@@ -36,7 +36,7 @@ const signup = async (req, res) => {
       profilePic: newUser.profilePic,
     });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     res.status(500).json({ error: "Something went wrong." });
   }
 };
@@ -64,12 +64,18 @@ const login = async (req, res) => {
       profilePic: userInDb.profilePic,
     });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     res.status(500).json({ error: "Something went wrong." });
   }
 };
 const logout = (req, res) => {
-  console.log("logout");
+  try {
+    res.clearCookie("token");
+    res.status(200).json({ message: "Logged out successfully." });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ error: "Something went wrong." });
+  }
 };
 
 export { signup, login, logout };
