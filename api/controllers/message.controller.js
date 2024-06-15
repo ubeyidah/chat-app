@@ -22,11 +22,10 @@ const sendMessage = async (req, res) => {
       message,
     });
     if (newMessage) {
-      conversation.messages.push(newMessage._id, newMessage);
+      conversation.messages.push(newMessage._id);
     }
 
-    await conversation.save();
-    await newMessage.save();
+    Promise.all([conversation.save(), newMessage.save()]);
     res.status(200).json(newMessage);
   } catch (error) {
     console.log(error.message);
@@ -34,4 +33,21 @@ const sendMessage = async (req, res) => {
   }
 };
 
-export { sendMessage };
+const getMessages = async (req, res) => {
+  try {
+    const { id: userToChatId } = req.params;
+    const { _id: userId } = req.user;
+    const conversation = await Conversation.findOne({
+      participants: { $all: [userId, userToChatId] },
+    }).populate("messages");
+    if (!conversation) {
+      return res.status(404).json({ error: "Conversation not found." });
+    }
+    res.status(200).json(conversation.messages);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ error: "Something went wrong." });
+  }
+};
+
+export { sendMessage, getMessages };
