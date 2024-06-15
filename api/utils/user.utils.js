@@ -7,6 +7,10 @@ const hashPassword = async (password) => {
   return hash;
 };
 
+const comparePassword = async (password, hash) => {
+  return await bcrypt.compare(password, hash);
+};
+
 const genTokenAndSetCookie = (userId, res) => {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: "15d",
@@ -19,4 +23,4 @@ const genTokenAndSetCookie = (userId, res) => {
   });
 };
 
-export { hashPassword, genTokenAndSetCookie };
+export { hashPassword, genTokenAndSetCookie, comparePassword };

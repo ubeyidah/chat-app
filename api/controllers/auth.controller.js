@@ -1,5 +1,10 @@
 import User from "../models/user.model.js";
-import { genTokenAndSetCookie, hashPassword } from "../utils/user.utils.js";
+import bcrypt from "bcrypt";
+import {
+  genTokenAndSetCookie,
+  hashPassword,
+  comparePassword,
+} from "../utils/user.utils.js";
 
 const signup = async (req, res) => {
   try {
@@ -35,8 +40,33 @@ const signup = async (req, res) => {
     res.status(500).json({ error: "Something went wrong." });
   }
 };
-const login = (req, res) => {
-  console.log("login");
+
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ error: "All fields are required." });
+    }
+    const userInDb = await User.findOne({ email });
+    if (!userInDb) {
+      return res.status(400).json({ error: "Incorrect email adress." });
+    }
+    const isMatch = await comparePassword(password, userInDb.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: "Incorrect password." });
+    }
+    genTokenAndSetCookie(userInDb._id, res);
+    res.json({
+      _id: userInDb._id,
+      userName: userInDb.userName,
+      email: userInDb.email,
+      gender: userInDb.gender,
+      profilePic: userInDb.profilePic,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Something went wrong." });
+  }
 };
 const logout = (req, res) => {
   console.log("logout");
