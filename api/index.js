@@ -3,9 +3,11 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/auth.route.js";
 import messagesRoutes from "./routes/message.route.js";
 import connectToDb from "./config/db.js";
+import cookieParser from "cookie-parser";
 const server = express();
 dotenv.config();
 server.use(express.json());
+server.use(cookieParser());
 server.use("/api/auth", authRoutes);
 server.use("/api/message", messagesRoutes);
 
